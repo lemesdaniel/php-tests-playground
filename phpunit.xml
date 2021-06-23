@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        bootstrap="./vendor/autoload.php"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true"
+        syntaxCheck="true">
+
+    <php>
+        <server name="HTTP_USER_AGENT" value="PHP Unit Test"/>
+        <server name="HTTP_HOST" value="localhost"/>
+    </php>
+    <testsuites>
+        <testsuite name="TestUnit">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
