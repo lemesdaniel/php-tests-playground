@@ -8,10 +8,12 @@
         convertWarningsToExceptions="true"
         verbose="true"
         syntaxCheck="true">
-
     <php>
         <server name="HTTP_USER_AGENT" value="PHP Unit Test"/>
         <server name="HTTP_HOST" value="localhost"/>
+        <ini name="error_reporting" value="E_ALL" />
+        <ini name="display_errors" value="On" />
+        <ini name="display_startup_errors" value="On" />
     </php>
     <testsuites>
         <testsuite name="TestUnit">
