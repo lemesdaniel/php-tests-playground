@@ -2,8 +2,6 @@
 
 namespace Tests\Services;
 
-use Exception;
-use Mockery;
 use Training\Exceptions\TrainingException;
 use Training\Models\Room;
 use Training\Models\User;
@@ -13,81 +11,69 @@ use PHPUnit\Framework\TestCase;
 class RoomServiceTest extends TestCase
 {
 
+    public $user;
+    public $room;
 
-    /**
-     * @test
-     * @throws TrainingException
-     */
-    public function createNewClass()
+    public function setUp()
     {
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive("getUserType")
-            ->andReturn(User::HOST);
-        $room = new Room();
-
-        $class = new RoomService($user, $room);
-        $this->assertObjectHasAttribute('roomCapacity' , $class->create());
-
+        $this->user = new User();
+        $this->room = new Room();
     }
 
     /**
      * @test
-     * @throws \Exception
+     * @throws \Training\Exceptions\TrainingException
      */
-    public function createNewClassAndFail()
+    public function addUser()
     {
-        $this->expectException(TrainingException::class);
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive("getUserType")
-            ->andReturn(User::STUDENT);
-        $room = new Room();
-        $class = new RoomService($user, $room);
-        $class->create();
-        $this->getExpectedException();
-    }
+        $roomService = new RoomService($this->user, $this->room);
 
-
-    /**
-     * @test
-     */
-    public function muteAllStudent()
-    {
-        $this->expectException(TrainingException::class);
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive("getUserType")
-            ->andReturn(User::STUDENT);
-        $room = new Room();
-        $class = new RoomService($user, $room);
-        for($i=0;$i<25;$i++){
-            $class->addUser(new User());
-        }
-        $class->create();
-        $this->expectExceptionObject(TrainingException::class);
-
-    }
-
-    /**
-     * @test
-     * @throws TrainingException
-     */
-    public function muteStudent()
-    {
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive("getUserType")
-            ->andReturn(User::HOST);
-        $room = new Room();
-        $class = new RoomService($user, $room);
+        $this->assertEquals(1, $roomService->room->countUserInRoom());
         $student = new User();
-        $class->addUser($student);
-
-        $this->assertEquals(1, $student->microphone);
-
-        $class->muteUser($student);
-
-        $this->assertEquals(0, $student->microphone);
-
+        $roomService->addUser($student);
+        $this->assertEquals(2, $roomService->room->countUserInRoom());
     }
 
+    /**
+     * @test
+     * @throws \Training\Exceptions\TrainingException
+     */
+    public function isStudent()
+    {
+        $roomService = new RoomService($this->user, $this->room);
 
+        $this->assertFalse($roomService->isStudent($this->user));
+        $student = new User();
+        $roomService->addUser($student);
+        $this->assertTrue($roomService->isStudent($student));
+    }
 
+    /**
+     * @test
+     * @throws \Training\Exceptions\TrainingException
+     */
+    public function muteUser()
+    {
+        $roomService = new RoomService($this->user, $this->room);
+        $student = new User();
+        $roomService->addUser($student);
+        $roomService->muteUser($student);
+        $this->assertFalse($student->microphoneIsEnable());
+        $roomService->unMuteUser($student);
+        $this->assertTrue($student->microphoneIsEnable());
+    }
+
+    /**
+     * @test
+     * @throws \Training\Exceptions\TrainingException
+     */
+    public function checkCapacityRoom()
+    {
+        $this->expectException(TrainingException::class);
+        $roomService = new RoomService($this->user, $this->room);
+        for ($i = 0; $i <= 26; $i++) {
+            $roomService->addUser(new User());
+        }
+
+    }
 }

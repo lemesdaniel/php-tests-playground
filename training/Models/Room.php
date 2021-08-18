@@ -1,40 +1,23 @@
 <?php
 
-
 namespace Training\Models;
 
 
 class Room
 {
-    /**
-     * @var int
-     */
-    private $roomCapacity = 25;
-    /**
-     * @var array
-     */
-    private $usersInRoom = [];
+    public $roomCapacity = 25;
+    public $usersInRoom = [];
 
-
-    /**
-     * @return int
-     */
     public function getRoomCapacity(): int
     {
         return $this->roomCapacity;
     }
 
-    /**
-     * @param int $increase
-     */
     public function increaseCapacity(int $increase): void
     {
         $this->roomCapacity += $increase;
     }
 
-    /**
-     * @return object
-     */
     public function save(): object
     {
         return (object)[
@@ -51,10 +34,23 @@ class Room
 
     public function addInRoom(User $user): void
     {
-        $this->usersInRoom[$user->id] = $user;
+        $this->usersInRoom[$user->id]['user'] = $user;
+        $this->usersInRoom[$user->id]['type'] = Enum::STUDENT;
     }
 
-    public function countUserInRoom(){
+    public function addHostInRoom(User $user): void
+    {
+        $this->usersInRoom[$user->id]['user'] = $user;
+        $this->usersInRoom[$user->id]['type'] = Enum::HOST;
+    }
+
+    public function countUserInRoom(): int
+    {
         return count($this->usersInRoom);
+    }
+
+    public function getUserType(User $user): int
+    {
+        return $this->usersInRoom[$user->id]['type'];
     }
 }

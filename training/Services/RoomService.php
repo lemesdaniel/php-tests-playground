@@ -1,9 +1,9 @@
 <?php
 
-
 namespace Training\Services;
 
 use Training\Exceptions\TrainingException;
+use Training\Models\Enum;
 use Training\Models\Room;
 use Training\Models\User;
 
@@ -12,21 +12,21 @@ class RoomService
     /**
      * @var User
      */
-    private $user;
+    public $user;
     /**
      * @var Room
      */
-    private $room;
+    public $room;
 
     /**
-     * @param User $user
-     * @param Room $room
+     * @throws TrainingException
      */
     public function __construct(User $user, Room $room)
     {
         $this->user = $user;
         $this->room = $room;
-        $this->room->addInRoom($user);
+        $this->room->addHostInRoom($user);
+        return $this->create();
     }
 
     /**
@@ -34,7 +34,7 @@ class RoomService
      */
     public function create(): object
     {
-        if ($this->userStudent($this->user)) {
+        if ($this->isStudent($this->user)) {
             throw new TrainingException(
                 "Operação não permitida para o usuário"
             );
@@ -69,14 +69,21 @@ class RoomService
 
     public function muteUser(User $user): void
     {
-        if ($user->getUserType() == User::STUDENT) {
-            $user->microphone = 0;
+        if ($this->room->getUserType($user) == Enum::STUDENT) {
+            $user->mute();
         }
     }
 
-    public function userStudent(User $user): bool
+    public function unMuteUser(User $user): void
     {
-        return ($user->getUserType() == User::STUDENT);
+        if (!$user->microphoneIsEnable()) {
+            $user->unMute();
+        }
+    }
+
+    public function isStudent(User $user): bool
+    {
+        return ($this->room->getUserType($user) == Enum::STUDENT);
     }
 
 }

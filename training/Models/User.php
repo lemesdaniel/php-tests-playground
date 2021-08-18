@@ -6,24 +6,31 @@ namespace Training\Models;
 
 class User
 {
-    public $id, $name;
-    public const HOST = 3;
-    public const COHOST = 2;
-    public const STUDENT = 1;
-    protected $type;
+    public $name;
+    public $id;
     /**
      * @var int
      */
-    public $microphone = 1;
+    private $microphone = 1;
 
     public function __construct()
     {
         $this->id = uniqid();
-        $this->type = self::STUDENT;
     }
 
-    public function getUserType()
+    public function mute(): void
     {
-        return $this->type;
+        $this->microphone = 0;
     }
+
+    public function unmute(): void
+    {
+        $this->microphone = 1;
+    }
+
+    public function microphoneIsEnable(): bool
+    {
+        return (bool) $this->microphone;
+    }
+
 }
