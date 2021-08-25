@@ -1,24 +1,9 @@
-version: '3.0'
+version: '3.5'
 services:
-  web:
-    container_name: php-training-web
-    image: php-training/web
-    depends_on:
-      - php
-    build: ./docker/nginx
-    networks:
-      - backend
-    ports:
-      - 8000:80
-    volumes:
-      - ./docker/nginx/certs:/etc/nginx/certs
-      - ./docker/nginx/conf:/etc/nginx/sites-available
-      - ./:/var/www/html
-
   php:
-    container_name: php-training-php
-    image: php-training/php
-    build: ./docker/php
+    container_name: aulas-online-php
+    image: aulas-online/php
+    build: ./
     networks:
       - backend
     volumes:
