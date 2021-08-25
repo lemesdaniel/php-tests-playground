@@ -1,5 +1,6 @@
 **Qual é o cenário?**
 
+
 A empresa **Aulas Online Ltda** solicitou que você construa uma sala de aula virtual com capacidade de 25 usuários incluindo moderadores e alunos no plano free da startup.
 
 A entrada na sala dá-se somente por meio da moderação do Anfitrião, opcionalmente o Anfitrião pode escolher uma pessoa para ser Co-Anfitrião e lhe auxiliar no gerenciamento da sala.
@@ -73,3 +74,7 @@ http://phptraining.local:8000/
 Room
 User
 Plan
+
+@TODO remover a exception e colocar na sala de espera
+@TODO pubsub para a sala de espera
+
