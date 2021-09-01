@@ -6,16 +6,14 @@ namespace Training\Models;
 
 class User
 {
-    public $name;
-    public $id;
-    /**
-     * @var int
-     */
-    private $microphone = 1;
+    public string $name;
+    public string $id;
+    private int $microphone;
 
     public function __construct()
     {
         $this->id = uniqid();
+        $this->microphone = 1;
     }
 
     public function mute(): void

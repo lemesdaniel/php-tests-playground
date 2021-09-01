@@ -2,16 +2,40 @@
 
 namespace Training\Models;
 
-class waitingRoom
+class WaitingRoom extends AbstractRoom
 {
-    public int $room_id;
-    public User $user;
-    public string $id;
+    private int $room_id;
+    private string $id;
 
-    public function __construct(User $user, int $room_id)
+    public function __construct()
     {
         $this->id = uniqid();
-        $this->user = $user;
-        $this->room_id = $room_id;
     }
+
+    /**
+     * @return int
+     */
+    public function getRoomId(): int
+    {
+        return $this->room_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $room_id
+     * @return WaitingRoom
+     */
+    public function setRoomId(int $room_id): WaitingRoom
+    {
+        $this->room_id = $room_id;
+        return $this;
+    }
+
 }

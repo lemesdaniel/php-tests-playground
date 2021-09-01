@@ -3,7 +3,7 @@
 namespace Tests\Services;
 
 use Training\Exceptions\TrainingException;
-use Training\Models\Room;
+use Training\Models\ClassRoom;
 use Training\Models\User;
 use Training\Models\WaitingRoom;
 use Training\Services\RoomService;
@@ -13,13 +13,13 @@ class RoomServiceTest extends TestCase
 {
 
     public User $user;
-    public Room $room;
+    public ClassRoom $room;
     public WaitingRoom $waitingRoom;
 
     public function setUp(): void
     {
         $this->user = new User();
-        $this->room = new Room();
+        $this->room = new ClassRoom();
         $this->waitingRoom = new WaitingRoom();
     }
 
@@ -31,10 +31,10 @@ class RoomServiceTest extends TestCase
     {
         $roomService = new RoomService($this->user, $this->room, $this->waitingRoom);
 
-        $this->assertEquals(1, $roomService->room->countUserInRoom());
+        $this->assertEquals(1, $roomService->countUserInRoom());
         $student = new User();
-        $roomService->addUser($student);
-        $this->assertEquals(2, $roomService->room->countUserInRoom());
+        $roomService->addUser($this->user, $student);
+        $this->assertEquals(2, $roomService->countUserInRoom());
     }
 
     /**
@@ -47,7 +47,7 @@ class RoomServiceTest extends TestCase
 
         $this->assertFalse($roomService->isStudent($this->user));
         $student = new User();
-        $roomService->addUser($student);
+        $roomService->addUser($this->user, $student);
         $this->assertTrue($roomService->isStudent($student));
     }
 
@@ -59,7 +59,7 @@ class RoomServiceTest extends TestCase
     {
         $roomService = new RoomService($this->user, $this->room, $this->waitingRoom);
         $student = new User();
-        $roomService->addUser($student);
+        $roomService->addUser($this->user, $student);
         $roomService->muteUser($student);
         $this->assertFalse($student->microphoneIsEnable());
         $roomService->unMuteUser($student);
@@ -75,10 +75,10 @@ class RoomServiceTest extends TestCase
         $roomService = new RoomService($this->user, $this->room, $this->waitingRoom);
 
         for ($i = 0; $i <= 26; $i++) {
-            $roomService->addUser(new User());
+            $roomService->addUser($this->user,new User());
         }
 
-        $this->assertEquals(25, $roomService->room->countUserInRoom());
+        $this->assertEquals(25, $roomService->countUserInRoom());
         //$this->assertEquals(2, $roomService->countUsersWaiting());
     }
 }

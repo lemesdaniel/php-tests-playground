@@ -3,7 +3,7 @@
 namespace Tests\Training\Room;
 
 use PHPUnit\Framework\TestCase;
-use Training\Models\Room;
+use Training\Models\ClassRoom;
 
 
 class RoomTest extends TestCase
@@ -14,7 +14,7 @@ class RoomTest extends TestCase
      */
     public function checkIfMaxUserRoomIs25()
     {
-        $room = new Room();
+        $room = new ClassRoom();
         $room->save();
         $this->assertEquals(25, $room->getRoomCapacity());
     }
@@ -24,7 +24,7 @@ class RoomTest extends TestCase
      */
     public function checkIfItIsPossibleIncreaseCapacity()
     {
-        $room = new Room();
+        $room = new ClassRoom();
         $room->save();
         $room->increaseCapacity(5);
         $this->assertEquals(30, $room->getRoomCapacity());
