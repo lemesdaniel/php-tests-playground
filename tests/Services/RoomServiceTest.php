@@ -2,7 +2,7 @@
 
 namespace Tests\Services;
 
-use Training\Exceptions\TrainingException;
+use Mockery;
 use Training\Models\ClassRoom;
 use Training\Models\User;
 use Training\Models\WaitingRoom;
@@ -33,13 +33,12 @@ class RoomServiceTest extends TestCase
 
         $this->assertEquals(1, $roomService->countUserInRoom());
         $student = new User();
-        $roomService->addUser($this->user, $student);
+        $roomService->addUserInRoom($student);
         $this->assertEquals(2, $roomService->countUserInRoom());
     }
 
     /**
      * @test
-     * @throws \Training\Exceptions\TrainingException
      */
     public function isStudent()
     {
@@ -47,19 +46,18 @@ class RoomServiceTest extends TestCase
 
         $this->assertFalse($roomService->isStudent($this->user));
         $student = new User();
-        $roomService->addUser($this->user, $student);
+        $roomService->addUserInRoom($student);
         $this->assertTrue($roomService->isStudent($student));
     }
 
     /**
      * @test
-     * @throws \Training\Exceptions\TrainingException
      */
     public function muteUser()
     {
         $roomService = new RoomService($this->user, $this->room, $this->waitingRoom);
         $student = new User();
-        $roomService->addUser($this->user, $student);
+        $roomService->addUserInRoom($student);
         $roomService->muteUser($student);
         $this->assertFalse($student->microphoneIsEnable());
         $roomService->unMuteUser($student);
@@ -68,17 +66,15 @@ class RoomServiceTest extends TestCase
 
     /**
      * @test
-     * @throws \Training\Exceptions\TrainingException
      */
-    public function checkCapacityRoom()
+    public function AddUsersWhoExceedCapacityToTheWaitingRoom()
     {
         $roomService = new RoomService($this->user, $this->room, $this->waitingRoom);
-
-        for ($i = 0; $i <= 26; $i++) {
-            $roomService->addUser($this->user,new User());
+        for ($i=0; $i < 30; $i++)
+        {
+            $roomService->addUserInRoom(new User());
         }
+        $this->assertEquals(5, $roomService->countUsersInWaitingRoom());
 
-        $this->assertEquals(25, $roomService->countUserInRoom());
-        //$this->assertEquals(2, $roomService->countUsersWaiting());
     }
 }

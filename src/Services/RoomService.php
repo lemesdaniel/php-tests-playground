@@ -35,32 +35,40 @@ class RoomService
         return true;
     }
 
-    /**
-     * @throws TrainingException
-     */
-    public function addUser(User $user, User $student): void
-    {
-        if (!$this->isStudent($user)
-            && ($this->classRoom->countUserInRoom() > $this->classRoom->getRoomCapacity())
-        ) {
-            throw new TrainingException('Excede a capacidade máxima da sala');
-        }
 
+    public function addUserInRoom(User $student): void
+    {
+        if ($this->classRoom->getRoomCapacity() < $this->classRoom->countUserInRoom())
+        {
+            //throw new TrainingException("Excede capacidade máxima da sala, aumente seu plano");
+            $this->addUserWaitingRoom($student);
+        }
         $this->classRoom->addInRoom($student);
     }
 
-    public function muteUser(User $user): void
+    public function addUserWaitingRoom(User $student): void
+    {
+        $this->waitingRoom->addInRoom($student);
+    }
+
+
+    public function muteUser(User $user): bool
     {
         if ($this->classRoom->getUserType($user) == Enum::STUDENT) {
             $user->mute();
+            return true;
         }
+        return false;
     }
 
-    public function unMuteUser(User $user): void
+    public function unMuteUser(User $user): bool
     {
         if (!$user->microphoneIsEnable()) {
             $user->unMute();
+            return true;
         }
+
+        return false;
     }
 
     public function isStudent(User $user): bool
@@ -68,20 +76,15 @@ class RoomService
         return ($this->classRoom->getUserType($user) == Enum::STUDENT);
     }
 
-    /**
-     * @return WaitingRoom
-     */
-    public function getWaitingRoom(): WaitingRoom
+
+    public function countUsersInWaitingRoom(): int
     {
-        return $this->waitingRoom;
+        return $this->waitingRoom->countUserInRoom();
     }
 
-    /**
-     * @return ClassRoom
-     */
-    public function getClassRoom(): ClassRoom
+    public function countUsersInClassRoom(): int
     {
-        return $this->classRoom;
+        return $this->classRoom->countUserInRoom();
     }
 
     /**
@@ -95,6 +98,11 @@ class RoomService
     public function countUserInRoom(): int
     {
         return $this->classRoom->countUserInRoom();
+    }
+
+    public function countUserInWaitingRoom(): int
+    {
+        return $this->waitingRoom->countUserInRoom();
     }
 
 }
